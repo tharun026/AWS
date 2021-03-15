@@ -1,0 +1,75 @@
+1. Create New IAM User with sts:AssumeRole permission.
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "VisualEditor0",
+            "Effect": "Allow",
+            "Action": "sts:AssumeRole",
+            "Resource": "*"
+        }
+    ]
+}
+
+2. Create IAM Role with all access policies.
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "",
+            "Effect": "Allow",
+            "Action": "s3:ListBucket",
+            "Resource": [
+                "arn:aws:s3:::tharun026"
+            ],
+            "Condition": {
+                "StringLike": {
+                    "s3:prefix": "country/state/*/pop/*"
+                }
+            }
+        },
+        {
+            "Sid": "",
+            "Effect": "Allow",
+            "Action": "s3:GetObject",
+            "Resource": [
+                "arn:aws:s3:::tharun026/country/state/*/pop/*"
+            ]
+        },
+        {
+            "Sid": "",
+            "Effect": "Allow",
+            "Action": "s3:PutObject",
+            "Resource": [
+                "arn:aws:s3:::tharun026/country/state/*/pop/*/output/*"
+            ]
+        }
+    ]
+}
+
+3. Add trust relationship in the role for the user with assume role permissions.
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::895205673914:user/tharun_test_user"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+
+4. Login to AWS CLI using the credentials (secure keys) of the user.
+5. use command aws sts get-caller-identity to verify the credentials
+6. Now code in the assume role command
+aws sts assume-role --role-arn arn:aws:iam::895205673914:role/tharun_test_role --role-session-name foo
+7. this will output all the session details.
+8. export AWS_ACCESS_KEY_ID=
+export AWS_SECRET_ACCESS_KEY=
+export AWS_SESSION_TOKEN=
+
+9. aws sts get-caller-identity to confirm the new assumed role session.
+
